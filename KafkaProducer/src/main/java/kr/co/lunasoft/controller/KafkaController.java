@@ -1,8 +1,9 @@
 package kr.co.lunasoft.controller;
 
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +28,7 @@ public class KafkaController {
 	private KafkaService kafkaService;
 
 	@GetMapping(value = "/send/message/{topic}")
-	public JSONObject sendMessage(@PathVariable String topic, @RequestBody MessageInfo messageInfo) {
+	public Map<String, Object> sendMessage(@PathVariable String topic, @RequestBody MessageInfo messageInfo) {
 		messageInfo.setCreated(DateUtil.getNowDatetime());
 
 		Gson gson = new Gson();
@@ -35,7 +36,7 @@ public class KafkaController {
 
 		kafkaService.send(topic, message);
 
-		JSONObject obj = new JSONObject();
+		Map<String, Object> obj = new Hashtable<String, Object>();
 		obj.put("code", "100200");
 		obj.put("msg", "success");
 		obj.put("data", null);
@@ -43,7 +44,7 @@ public class KafkaController {
 	}
 
 	@GetMapping(value = "/send/notice/{topic}")
-	public JSONObject sendNotice(@PathVariable String topic, @RequestBody NoticeInfo noticeInfo) {
+	public Map<String, Object> sendNotice(@PathVariable String topic, @RequestBody NoticeInfo noticeInfo) {
 		Gson gson = new Gson();
 		String message = gson.toJson(noticeInfo);
 
@@ -52,7 +53,7 @@ public class KafkaController {
 			return Thread.currentThread().getId();
 		}).thenAccept(str -> log.info("[END]" + String.valueOf(str)));
 
-		JSONObject obj = new JSONObject();
+		Map<String, Object> obj = new Hashtable<String, Object>();
 		obj.put("code", "100200");
 		obj.put("msg", "success");
 		obj.put("data", null);
