@@ -33,13 +33,16 @@ public class KafkaController {
 
 		Gson gson = new Gson();
 		String message = gson.toJson(messageInfo);
-
-		kafkaService.send(topic, message);
+		
+		CompletableFuture.supplyAsync(() -> {
+			kafkaService.send(topic, message);
+			return Thread.currentThread().getId();
+		}).thenAccept(str -> log.info("[END]" + String.valueOf(str)));
 
 		Map<String, Object> obj = new Hashtable<String, Object>();
 		obj.put("code", "100200");
 		obj.put("msg", "success");
-		obj.put("data", null);
+		obj.put("data", "");
 		return obj;
 	}
 
@@ -56,7 +59,7 @@ public class KafkaController {
 		Map<String, Object> obj = new Hashtable<String, Object>();
 		obj.put("code", "100200");
 		obj.put("msg", "success");
-		obj.put("data", null);
+		obj.put("data", "");
 		return obj;
 	}
 
