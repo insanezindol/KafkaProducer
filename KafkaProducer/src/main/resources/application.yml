@@ -7,10 +7,14 @@ spring:
     add-mappings: false
   kafka:
     consumer:
-      group-id: elasticsearch-group
+      group-id: kafka-call-group
     bootstrap-servers: ubuntu-server:9092
   main:
     allow-bean-definition-overriding: true
+
+logging:
+  level:
+    org.apache.kafka.config: ERROR
 
 server:
   port: 8888
@@ -20,7 +24,6 @@ server:
   tomcat:
     max-threads: 100
     max-swallow-size: 2MB
-    max-http-form-post-size: 2MB
     accesslog:
       enabled: true
       prefix: access_log_kafkaproducer
