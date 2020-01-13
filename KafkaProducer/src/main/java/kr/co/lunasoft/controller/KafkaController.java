@@ -62,5 +62,19 @@ public class KafkaController {
 		obj.put("data", "");
 		return obj;
 	}
+	
+	@GetMapping(value = "/send/string/{topic}/{message}")
+	public Map<String, Object> sendString(@PathVariable String topic, @PathVariable String message) {
+		CompletableFuture.supplyAsync(() -> {
+			kafkaService.send(topic, message);
+			return Thread.currentThread().getId();
+		}).thenAccept(str -> log.info("[END]" + String.valueOf(str)));
+
+		Map<String, Object> obj = new Hashtable<String, Object>();
+		obj.put("code", "100200");
+		obj.put("msg", "success");
+		obj.put("data", "");
+		return obj;
+	}
 
 }
